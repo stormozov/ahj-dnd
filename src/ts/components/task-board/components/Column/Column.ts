@@ -1,10 +1,10 @@
-import { ColumnOrCardId } from '../../shared/types';
 import { IdGenerator } from '../../services/IdGenerator';
-import Card from '../Card/Card';
-import createElement from '../../utils/createElementFunction';
-import { ElementConfig, ICardData } from '../../shared/interface';
-import { CardForm } from '../CardForm/CardForm';
 import { StorageService } from '../../services/StorageService';
+import { ElementConfig, ICardData } from '../../shared/interface';
+import { ColumnOrCardId } from '../../shared/types';
+import createElement from '../../utils/createElementFunction';
+import Card from '../Card/Card';
+import { CardForm } from '../CardForm/CardForm';
 
 export default class Column {
   public readonly _id: string;
@@ -140,12 +140,26 @@ export default class Column {
   private _attachEventListeners(): void {
     if (!this._columnElement) return;
 
-    const addCardBtn = this._columnElement.querySelector(
+    this._attachAddCardButtonListener();
+    this._attachDeleteCardListener();
+  }
+
+  private _attachAddCardButtonListener(): void {
+    const addCardBtn = this._columnElement?.querySelector(
       '.board__column-add-card-btn'
     );
     if (addCardBtn) {
       addCardBtn.addEventListener('click', () => this._onAddCardClick());
     }
+  }
+
+  private _attachDeleteCardListener(): void {
+    this._columnElement?.addEventListener('click', (event) => {
+      const target = event.target as HTMLElement;
+      if (target.classList.contains('board__card-delete-btn')) {
+        this._onDeleteCardClick(event);
+      }
+    });
   }
 
   private _onAddCardClick(): void {
@@ -234,5 +248,23 @@ export default class Column {
 
   private _generateColumnID(id: ColumnOrCardId | undefined): string {
     return id ? `column-${id}` : this._idGeneratorService.generateColumnId();
+  }
+
+  private _onDeleteCardClick(event: Event): void {
+    const deleteBtn = event.target as HTMLElement;
+    const cardElement = deleteBtn.closest('.board__card') as HTMLElement;
+
+    if (!cardElement) return;
+
+    const cardId = cardElement.id;
+
+    // Удаляем карточку из localStorage
+    StorageService.removeCardFromColumn(this._id, cardId);
+
+    // Удаляем карточку из внутреннего Map
+    this._cards.delete(cardId);
+
+    // Удаляем карточку из DOM
+    cardElement.remove();
   }
 }
