@@ -1,0 +1,25 @@
+.board {
+  font-size: 1rem;
+  color: inherit;
+
+  &__container {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 10px;
+
+    padding: 0 15px;
+    margin: 0 auto;
+
+    @media screen and (max-width: 992px) {
+      padding: 0 20px;
+    }
+
+    @media screen and (max-width: 1920px) {
+      max-width: 95vw;
+    }
+
+    @media screen and (min-width: 1921px) {
+      max-width: 70vw;
+    }
+  }
+}

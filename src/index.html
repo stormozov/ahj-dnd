@@ -3,23 +3,30 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Homepage</title>
+    <title>Система управления задачами</title>
   </head>
   <body>
     <div id="root">
       <div class="container">
-        <!-- Навигация -->
-        <nav class="nav">
-          <ul class="nav__list">
-            <li class="nav__item">
-              <a href="./task-board.html" class="nav__link">О нас</a>
-            </li>
-          </ul>
-        </nav>
-
-        <!-- Заголовок -->
-        <h1>Hello from HTML!</h1>
+        <header class="header">
+          <!-- Заголовок -->
+          <h1>Система управления задачами</h1>
+          <p class="author">
+            Разработчик:
+            <a
+              class="author-link"
+              href="https://github.com/stormozov"
+              rel="noopener noreferrer"
+              target="_blank"
+            >
+              stormozov
+            </a>
+          </p>
+        </header>
       </div>
+
+      <!-- Контейнер для системы -->
+      <div class="task-container"></div>
     </div>
   </body>
 </html>

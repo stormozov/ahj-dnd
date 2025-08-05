@@ -1,9 +1,13 @@
-/* body */
+@use './vars' as vars;
+
 body {
   box-sizing: border-box;
+
+  background-color: vars.$background-main-color;
+
   font-family: 'Roboto', sans-serif;
   font-size: 23px;
-  background-color: antiquewhite;
+  color: vars.$main-text-color;
 }
 
 .container {
@@ -11,6 +15,61 @@ body {
   margin: 0 auto;
 }
 
-.webpack-img {
-  width: 100%;
+a,
+button,
+input,
+textarea {
+  transition: vars.$transition;
+}
+
+button {
+  background-color: transparent;
+
+  cursor: pointer;
+}
+
+.header {
+  padding: 30px 0;
+  margin-bottom: 24px;
+
+  text-align: center;
+}
+
+.author {
+  margin-top: 0.5em;
+  font-size: 1.2rem;
+
+  &-link {
+    position: relative;
+    color: vars.$primary-color;
+
+    &:hover {
+      color: vars.$secondary-text-color;
+
+      &::after {
+        right: -12px;
+        opacity: 1;
+      }
+    }
+
+    &::after {
+      content: '';
+
+      position: absolute;
+      top: 50%;
+      right: 10px;
+
+      opacity: 0;
+      transform: rotate(-45deg) translateY(-50%);
+      transition: vars.$transition;
+
+      display: inline-block;
+
+      width: 8px;
+      height: 8px;
+
+      border-right: 2px solid;
+      border-bottom: 2px solid;
+    }
+  }
 }

@@ -1,0 +1,87 @@
+@use '../utils/vars' as vars;
+
+.board {
+  &__column {
+    height: max-content;
+
+    padding: 20px;
+
+    background-color: #ffffff;
+    border-radius: vars.$border-radius-default;
+
+    &-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+
+      margin-bottom: 24px;
+    }
+
+    &-dropdown-btn {
+      width: 35px;
+
+      &:hover {
+        & > .board__column-dropdown-icon {
+          transform: rotate(180deg) scale(1.2);
+          background-color: vars.$primary-color;
+
+          &::after,
+          &::before {
+            background-color: inherit;
+          }
+        }
+      }
+    }
+
+    &-dropdown-icon {
+      position: relative;
+      transition: vars.$transition;
+
+      display: inline-block;
+
+      width: 4px;
+      height: 4px;
+
+      background-color: #000000;
+      border-radius: 100px;
+
+      &::after,
+      &::before {
+        content: '';
+
+        position: absolute;
+        display: inherit;
+
+        width: inherit;
+        height: inherit;
+
+        background-color: inherit;
+        border-radius: inherit;
+      }
+
+      &::before {
+        left: -8px;
+      }
+
+      &::after {
+        right: -8px;
+      }
+    }
+
+    &-footer {
+      margin-top: 24px;
+    }
+
+    &-add-card-btn {
+      padding: 5px 10px;
+
+      font-size: 1rem;
+      color: vars.$light-text-color;
+
+      &:hover {
+        color: vars.$primary-color;
+        margin-left: 2px;
+      }
+    }
+  }
+}

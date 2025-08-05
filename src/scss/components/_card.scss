@@ -1,0 +1,41 @@
+@use '../utils/vars';
+
+.board {
+  &__card {
+    position: relative;
+
+    padding: 10px 25px 10px 15px;
+
+    background-color: vars.$background-main-color;
+    border-radius: vars.$border-radius-default;
+
+    &:not(:last-child) {
+      margin-bottom: 0.375rem;
+    }
+
+    &:hover &-delete-btn {
+      opacity: 1;
+    }
+
+    &-title {
+      margin-bottom: 0.8rem;
+    }
+
+    &-text {
+      color: vars.$secondary-text-color;
+    }
+
+    &-delete-btn {
+      position: absolute;
+      top: 0.4rem;
+      right: 0.4rem;
+
+      opacity: 0;
+
+      &:hover {
+        transform: scale(1.2);
+        color: vars.$danger-color;
+      }
+    }
+  }
+}
