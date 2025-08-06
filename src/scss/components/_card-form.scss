@@ -1,0 +1,98 @@
+@use '../utils/vars' as vars;
+
+.card-form {
+  padding: 15px;
+  margin-top: 10px;
+
+  background: #f8f9fa;
+  border: 1px solid vars.$border-color;
+  border-radius: vars.$border-radius-default;
+
+  &__title {
+    margin-bottom: 10px;
+  }
+
+  &__label {
+    display: inline-block;
+    font-size: 0.875rem;
+    margin-bottom: 4px;
+  }
+
+  &__field {
+    margin-bottom: 15px;
+  }
+
+  &__input,
+  &__textarea {
+    width: 100%;
+
+    padding: 8px 12px;
+
+    border: 1px solid vars.$border-color;
+    border-radius: vars.$border-radius-small;
+
+    font-family: inherit;
+    font-size: 0.875rem;
+
+    resize: vertical;
+
+    &:focus {
+      border-color: vars.$secondary-text-color;
+    }
+  }
+
+  &__input--title {
+    height: 40px;
+  }
+
+  &__textarea {
+    height: 6.5rem;
+    resize: none;
+  }
+
+  &__counter {
+    cursor: default;
+
+    font-size: 0.75rem;
+    color: vars.$third-text-color;
+    text-align: right;
+
+    margin-top: 4px;
+  }
+
+  &__actions {
+    display: flex;
+    gap: 10px;
+  }
+
+  &__submit-btn,
+  &__cancel-btn {
+    cursor: pointer;
+
+    padding: 8px 16px;
+
+    border: none;
+    border-radius: 4px;
+
+    font-size: 0.875rem;
+  }
+
+  &__submit-btn {
+    background: vars.$primary-color;
+    color: #ffffff;
+
+    &:disabled {
+      cursor: not-allowed;
+      background: vars.$button-disabled-color;
+    }
+  }
+
+  &__cancel-btn {
+    background: transparent;
+    color: vars.$third-text-color;
+
+    &:hover {
+      color: vars.$secondary-text-color;
+    }
+  }
+}

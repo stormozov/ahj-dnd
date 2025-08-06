@@ -1,7 +1,10 @@
+import { DropAndDragService } from '../../services/DropAndDragService';
 import { IColumnConfig } from '../../shared/interface';
 import Column from '../Column/Column';
 
 export default class Board {
+  private _dndService: DropAndDragService | null = null;
+
   constructor(
     private _container: HTMLDivElement,
     private readonly _columnConfigs: IColumnConfig[]
@@ -16,6 +19,9 @@ export default class Board {
     board.append(container);
 
     this._container.append(board);
+
+    // Инициализируем и включаем DnD после добавления элементов в DOM
+    this._initDnDService(board);
   }
 
   createBoardElement(): HTMLDivElement {
@@ -42,5 +48,32 @@ export default class Board {
     return this.createColumns().map((column) => {
       return column.createColumn(column.title);
     });
+  }
+
+  disableDnD(): void {
+    if (this._dndService) {
+      this._dndService.disable();
+      this._dndService = null;
+    }
+  }
+
+  enableDnD(): void {
+    // Сначала отключаем, если уже был включен, чтобы избежать дублирования
+    this.disableDnD();
+
+    const boardElement = this._container.querySelector('.board');
+    if (boardElement && boardElement instanceof HTMLDivElement) {
+      this._initDnDService(boardElement);
+    } else {
+      console.error('Элемент доски не найден для включения DnD');
+    }
+  }
+
+  private _initDnDService(boardElement: HTMLDivElement): void {
+    // Создаем экземпляр сервиса, передавая ему контейнер доски
+    this._dndService = new DropAndDragService(boardElement);
+
+    // Включаем функционал Drag and Drop
+    this._dndService.enable();
   }
 }

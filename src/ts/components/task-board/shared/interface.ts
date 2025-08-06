@@ -35,3 +35,21 @@ export interface IColumnConfig {
   id: string;
   title: string;
 }
+
+export interface IPosition {
+  x: number;
+  y: number;
+}
+
+export interface IDragState {
+  isDragging: boolean;
+  draggedElement: HTMLElement | null;
+  placeholder: HTMLElement | null;
+  originalColumn: HTMLElement | null;
+  originalColumnId: string;
+  originalIndex: number;
+  currentColumn: HTMLElement | null;
+  originalWidth: number;
+  offsetX: number;
+  offsetY: number;
+}
