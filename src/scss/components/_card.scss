@@ -1,6 +1,33 @@
 @use '../utils/vars';
 
 .board {
+  &__card-list {
+    overflow-y: auto;
+    max-height: calc(100vh - 335px);
+    padding-right: 6px;
+    box-sizing: border-box;
+
+    &::-webkit-scrollbar {
+      width: 6px; /* Ширина вертикального скроллбара */
+    }
+
+    &::-webkit-scrollbar-track {
+      background: #f1f1f1; /* Цвет фона трека */
+      border-radius: 10px; /* Закругление углов трека */
+    }
+
+    &::-webkit-scrollbar-thumb {
+      transition: vars.$transition;
+
+      background: #888; /* Цвет полосы прокрутки */
+      border-radius: 10px; /* Закругление углов полосы прокрутки */
+
+      &:hover {
+        background: #555; /* Цвет полосы прокрутки при наведении */
+      }
+    }
+  }
+
   &__card {
     position: relative;
 

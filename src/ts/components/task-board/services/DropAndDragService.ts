@@ -49,13 +49,7 @@ export class DropAndDragService {
 
     const target = event.target as HTMLElement;
 
-    if (
-      target.closest('.board__card-delete-btn') ||
-      target.closest('.board__card-title') ||
-      target.closest('.board__card-text')
-    ) {
-      return;
-    }
+    if (target.closest('.board__card-delete-btn')) return;
 
     // Проверяем, кликнули ли по карточке
     const card = (event.target as HTMLElement).closest('.board__card');
