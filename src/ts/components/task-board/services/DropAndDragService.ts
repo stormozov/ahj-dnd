@@ -1,8 +1,23 @@
 import { IDragState } from '../shared/interface';
 import { StorageService } from './StorageService';
 
+/**
+ * Сервис для реализации функционала Drag-and-Drop (перетаскивания) карточек между колонками.
+ * Управляет всем процессом перетаскивания: от начала до завершения, включая обновление DOM и хранилища.
+ */
 export class DropAndDragService {
+  /**
+   * Контейнер доски, на котором будут обрабатываться события.
+   *
+   * @private
+   * @readonly
+   */
   private readonly _boardContainer: HTMLElement;
+
+  /**
+   * Текущее состояние перетаскивания.
+   * @private
+   */
   private _dragState: IDragState = {
     isDragging: false,
     draggedElement: null,
@@ -16,17 +31,36 @@ export class DropAndDragService {
     offsetY: 0,
   };
 
+  /**
+   * CSS-класс, применяемый к перетаскиваемому элементу.
+   *
+   * @static
+   * @readonly
+   */
   static readonly DRAGGING_CLASS = 'board__card--dragging';
 
+  /**
+   * Создает экземпляр сервиса Drag-and-Drop.
+   *
+   * @param {HTMLElement} boardContainer - DOM-элемент контейнера доски.
+   */
   constructor(boardContainer: HTMLElement) {
     this._boardContainer = boardContainer;
     this._init();
   }
 
+  /**
+   * Включает функционал Drag-and-Drop.
+   * В текущей реализации сервис включается автоматически при создании.
+   */
   enable(): void {
     // Сервис уже включен в конструкторе
   }
 
+  /**
+   * Отключает функционал Drag-and-Drop.
+   * Удаляет все обработчики событий и сбрасывает состояние.
+   */
   disable(): void {
     this._cleanup();
     // Удаляем основной обработчик
@@ -36,6 +70,10 @@ export class DropAndDragService {
     );
   }
 
+  /**
+   * Инициализирует сервис, добавляя обработчики событий.
+   * @private
+   */
   private _init(): void {
     // Используем делегирование событий на уровне контейнера доски
     this._boardContainer.addEventListener(
@@ -44,6 +82,13 @@ export class DropAndDragService {
     );
   }
 
+  /**
+   * Обработчик события нажатия кнопки мыши.
+   * Начинает процесс перетаскивания, если клик был по карточке.
+   *
+   * @param {MouseEvent} event - Событие мыши.
+   * @private
+   */
   private _handleMouseDown(event: MouseEvent): void {
     if (event.button !== 0) return;
 
@@ -92,6 +137,13 @@ export class DropAndDragService {
     this._preventTextSelection(true);
   }
 
+  /**
+   * Обработчик события перемещения мыши.
+   * Управляет перемещением карточки и обновлением placeholder'а.
+   *
+   * @param {MouseEvent} event - Событие мыши.
+   * @private
+   */
   private _handleMouseMove(event: MouseEvent): void {
     if (!this._dragState.isDragging || !this._dragState.draggedElement) return;
 
@@ -114,6 +166,13 @@ export class DropAndDragService {
     }
   }
 
+  /**
+   * Обработчик события отпускания кнопки мыши.
+   * Завершает процесс перетаскивания и обновляет DOM и хранилище.
+   *
+   * @param {MouseEvent} event - Событие мыши.
+   * @private
+   */
   private _handleMouseUp(event: MouseEvent): void {
     if (!this._dragState.isDragging) return;
 
@@ -125,6 +184,12 @@ export class DropAndDragService {
     this._cleanup();
   }
 
+  /**
+   * Перемещает перетаскиваемый элемент в соответствии с положением мыши.
+   *
+   * @param {MouseEvent} event - Событие мыши.
+   * @private
+   */
   private _moveDraggedElement(event: MouseEvent): void {
     if (!this._dragState.draggedElement) return;
 
@@ -132,6 +197,12 @@ export class DropAndDragService {
     this._dragState.draggedElement.style.top = `${event.clientY - this._dragState.offsetY}px`;
   }
 
+  /**
+   * Обновляет позицию placeholder'а в зависимости от положения мыши.
+   *
+   * @param {MouseEvent} event - Событие мыши.
+   * @private
+   */
   private _updatePlaceholderPosition(event: MouseEvent): void {
     if (
       !this._dragState.currentColumn ||
@@ -172,6 +243,10 @@ export class DropAndDragService {
     cardList.insertBefore(this._dragState.placeholder, insertBeforeElement);
   }
 
+  /**
+   * Завершает процесс перетаскивания, вставляя карточку на новое место.
+   * @private
+   */
   private _finishDragging(): void {
     if (
       !this._dragState.draggedElement ||
@@ -214,6 +289,14 @@ export class DropAndDragService {
     }
   }
 
+  /**
+   * Обновляет данные в localStorage после перетаскивания карточки.
+   *
+   * @param {string} targetColumnId - ID целевой колонки.
+   * @param {number} [newIndex=-1] - Новая позиция карточки в колонке.
+   *
+   * @private
+   */
   private _updateLocalStorage(
     targetColumnId: string,
     newIndex: number = -1
@@ -292,6 +375,14 @@ export class DropAndDragService {
     }
   }
 
+  /**
+   * Создает placeholder для перетаскиваемой карточки.
+   *
+   * @param {HTMLElement} cardElement - DOM-элемент карточки.
+   * @returns {HTMLElement} Созданный placeholder.
+   *
+   * @private
+   */
   private _createPlaceholder(cardElement: HTMLElement): HTMLElement {
     const placeholder = document.createElement('li');
     placeholder.className = 'board__card-placeholder';
@@ -300,6 +391,11 @@ export class DropAndDragService {
     return placeholder;
   }
 
+  /**
+   * Применяет стили к перетаскиваемому элементу.
+   *
+   * @private
+   */
   private _applyDragStyles(): void {
     if (!this._dragState.draggedElement) return;
 
@@ -320,6 +416,12 @@ export class DropAndDragService {
     } as MouseEvent);
   }
 
+  /**
+   * Включает/выключает выделение текста на странице.
+   *
+   * @param {boolean} prevent - Если true, выделение текста будет отключено.
+   * @private
+   */
   private _preventTextSelection(prevent: boolean): void {
     if (prevent) {
       document.body.style.userSelect = 'none';
@@ -330,6 +432,12 @@ export class DropAndDragService {
     }
   }
 
+  /**
+   * Очищает состояние сервиса после завершения перетаскивания.
+   * Удаляет обработчики событий, сбрасывает стили и состояние.
+   *
+   * @private
+   */
   private _cleanup(): void {
     // Удаляем обработчики событий
     document.removeEventListener('mousemove', this._handleMouseMove.bind(this));

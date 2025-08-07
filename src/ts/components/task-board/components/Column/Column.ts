@@ -6,15 +6,61 @@ import createElement from '../../utils/createElementFunction';
 import Card from '../Card/Card';
 import { CardForm } from '../CardForm/CardForm';
 
+/**
+ * Класс, представляющий колонку на доске задач.
+ * Отвечает за создание, отображение и управление карточками внутри колонки.
+ */
 export default class Column {
+  /**
+   * Уникальный идентификатор колонки.
+   *
+   * @readonly
+   */
   public readonly _id: string;
 
+  /**
+   * Заголовок колонки.
+   *
+   * @private
+   * @readonly
+   */
   private readonly _title: string;
+
+  /**
+   * Карточки в колонке, хранящиеся в виде Map.
+   * Ключ - идентификатор карточки, значение - объект с данными карточки.
+   *
+   * @private
+   */
   private _cards: Map<string, { title: string; text: string }>;
+
+  /**
+   * Сервис для генерации идентификаторов.
+   *
+   * @private
+   */
   private _idGeneratorService = IdGenerator.getInstance();
+
+  /**
+   * Текст кнопки добавления новой карточки.
+   *
+   * @private
+   */
   private _addNewCardBtnText = '+ Добавить карточку';
+
+  /**
+   * DOM-элемент колонки.
+   *
+   * @private
+   */
   private _columnElement: HTMLElement | null = null;
 
+  /**
+   * Создает экземпляр колонки.
+   *
+   * @param {string} title - Заголовок колонки.
+   * @param {ColumnOrCardId} [id] - Необязательный идентификатор колонки.
+   */
   constructor(title: string, id?: ColumnOrCardId) {
     this._id = this._generateColumnID(id);
     this._title = title;
@@ -23,14 +69,32 @@ export default class Column {
     this._loadCardsFromStorage();
   }
 
+  /**
+   * Возвращает массив идентификаторов карточек в колонке.
+   *
+   * @returns {string[]} Массив идентификаторов карточек.
+   */
   get cards(): string[] {
     return [...this._cards.keys()];
   }
 
+  /**
+   * Возвращает заголовок колонки.
+   *
+   * @returns {string} Заголовок колонки.
+   */
   get title(): string {
     return this._title;
   }
 
+  /**
+   * Добавляет новую карточку в колонку.
+   *
+   * @param {string} title - Заголовок карточки.
+   * @param {string} text - Текст карточки.
+   *
+   * @returns {string} Идентификатор созданной карточки.
+   */
   addCard(title: string, text: string): string {
     const cardId = this._idGeneratorService.generateCardId();
     this._cards.set(cardId, { title, text });
@@ -38,6 +102,12 @@ export default class Column {
     return cardId;
   }
 
+  /**
+   * Создает DOM-элемент колонки.
+   *
+   * @param {string} title - Заголовок колонки.
+   * @returns {HTMLElement} Созданный DOM-элемент колонки.
+   */
   createColumn(title: string): HTMLElement {
     this._columnElement = createElement({
       tag: 'div',
@@ -56,6 +126,9 @@ export default class Column {
     return this._columnElement;
   }
 
+  /**
+   * Обновляет DOM колонки, перерисовывая все карточки.
+   */
   refreshColumnDOM(): void {
     if (!this._columnElement) return;
 
@@ -72,6 +145,14 @@ export default class Column {
     }
   }
 
+  /**
+   * Создает конфигурацию для заголовка колонки.
+   *
+   * @param {string} title - Заголовок колонки.
+   * @returns {ElementConfig} Конфигурация элемента заголовка.
+   *
+   * @private
+   */
   private _createColumnHeader(title: string): ElementConfig {
     return {
       tag: 'header',
@@ -96,6 +177,12 @@ export default class Column {
     };
   }
 
+  /**
+   * Создает конфигурацию для тела колонки.
+   *
+   * @returns {ElementConfig} Конфигурация элемента тела колонки.
+   * @private
+   */
   private _createColumnBody(): ElementConfig {
     return {
       tag: 'div',
@@ -104,6 +191,12 @@ export default class Column {
     };
   }
 
+  /**
+   * Создает конфигурацию для подвала колонки.
+   *
+   * @returns {ElementConfig} Конфигурация элемента подвала колонки.
+   * @private
+   */
   private _createColumnFooter(): ElementConfig {
     return {
       tag: 'footer',
@@ -121,6 +214,12 @@ export default class Column {
     };
   }
 
+  /**
+   * Создает конфигурацию для списка карточек.
+   *
+   * @returns {ElementConfig} Конфигурация элемента списка карточек.
+   * @private
+   */
   private _createCardListElement(): ElementConfig {
     const cardElements: ElementConfig[] = [];
 
@@ -137,6 +236,11 @@ export default class Column {
     };
   }
 
+  /**
+   * Добавляет обработчики событий к элементам колонки.
+   *
+   * @private
+   */
   private _attachEventListeners(): void {
     if (!this._columnElement) return;
 
@@ -144,6 +248,11 @@ export default class Column {
     this._attachDeleteCardListener();
   }
 
+  /**
+   * Добавляет обработчик события для кнопки добавления карточки.
+   *
+   * @private
+   */
   private _attachAddCardButtonListener(): void {
     const addCardBtn = this._columnElement?.querySelector(
       '.board__column-add-card-btn'
@@ -153,6 +262,11 @@ export default class Column {
     }
   }
 
+  /**
+   * Добавляет обработчик события для удаления карточки.
+   *
+   * @private
+   */
   private _attachDeleteCardListener(): void {
     this._columnElement?.addEventListener('click', (event) => {
       const target = event.target as HTMLElement;
@@ -162,10 +276,20 @@ export default class Column {
     });
   }
 
+  /**
+   * Обработчик клика по кнопке добавления карточки.
+   *
+   * @private
+   */
   private _onAddCardClick(): void {
     this._toggleCardForm();
   }
 
+  /**
+   * Переключает отображение формы добавления карточки.
+   *
+   * @private
+   */
   private _toggleCardForm(): void {
     const columnBody = this._columnElement?.querySelector(
       '.board__column-body'
@@ -183,6 +307,12 @@ export default class Column {
     }
   }
 
+  /**
+   * Показывает форму для добавления новой карточки.
+   *
+   * @param {Element} columnBody - DOM-элемент тела колонки.
+   * @private
+   */
   private _showCardForm(columnBody: Element): void {
     const cardForm = new CardForm({
       columnId: this._id,
@@ -199,6 +329,12 @@ export default class Column {
     }
   }
 
+  /**
+   * Добавляет карточку в DOM.
+   *
+   * @param {ICardData} cardData - Данные карточки.
+   * @private
+   */
   private _addCardToDOM(cardData: ICardData): void {
     const card = new Card(cardData.id, cardData.title, cardData.text);
     const cardElement = card.createCardItem();
@@ -209,6 +345,14 @@ export default class Column {
     }
   }
 
+  /**
+   * Обработчик отправки формы добавления карточки.
+   *
+   * @param {string} title - Заголовок карточки.
+   * @param {string} text - Текст карточки.
+   *
+   * @private
+   */
   private _onFormSubmit(title: string, text: string): void {
     // Создаем новую карточку
     const cardId = this._idGeneratorService.generateCardId();
@@ -233,6 +377,11 @@ export default class Column {
     this._toggleCardForm();
   }
 
+  /**
+   * Загружает карточки из хранилища.
+   *
+   * @private
+   */
   private _loadCardsFromStorage(): void {
     const columnData = StorageService.getColumn(this._id);
     if (columnData && columnData.cards.length > 0) {
@@ -246,10 +395,24 @@ export default class Column {
     }
   }
 
+  /**
+   * Генерирует идентификатор колонки.
+   *
+   * @param {ColumnOrCardId} id - Необязательный идентификатор колонки.
+   * @returns {string} Сгенерированный идентификатор колонки.
+   *
+   * @private
+   */
   private _generateColumnID(id: ColumnOrCardId | undefined): string {
     return id ? `column-${id}` : this._idGeneratorService.generateColumnId();
   }
 
+  /**
+   * Обработчик клика по кнопке удаления карточки.
+   *
+   * @param {Event} event - Событие клика.
+   * @private
+   */
   private _onDeleteCardClick(event: Event): void {
     const deleteBtn = event.target as HTMLElement;
     const cardElement = deleteBtn.closest('.board__card') as HTMLElement;

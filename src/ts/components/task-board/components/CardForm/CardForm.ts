@@ -1,20 +1,73 @@
 import { ElementConfig, ICardFormOptions } from '../../shared/interface';
 import createElement from '../../utils/createElementFunction';
 
+/**
+ * Класс формы для создания/редактирования карточек задач.
+ * Управляет отображением формы, валидацией и обработкой событий.
+ */
 export class CardForm {
+  /**
+   * DOM-элемент формы.
+   * @private
+   */
   private _element: HTMLElement;
+
+  /**
+   * Опции формы (колбэки и параметры).
+   * @private
+   */
   private _options: ICardFormOptions;
+
+  /**
+   * Поле ввода заголовка карточки.
+   * @private
+   */
   private _titleInput!: HTMLInputElement;
+
+  /**
+   * Поле ввода текста карточки.
+   * @private
+   */
   private _textInput!: HTMLTextAreaElement;
+
+  /**
+   * Кнопка отправки формы.
+   * @private
+   */
   private _submitBtn!: HTMLButtonElement;
+
+  /**
+   * Счетчик символов для заголовка.
+   * @private
+   */
   private _titleCounter!: HTMLElement;
+
+  /**
+   * Счетчик символов для текста.
+   * @private
+   */
   private _textCounter!: HTMLElement;
 
+  /**
+   * Максимальная длина заголовка карточки.
+   * @private
+   * @readonly
+   */
   // eslint-disable-next-line @typescript-eslint/naming-convention
   private readonly TITLE_MAX_LENGTH = 70;
+
+  /**
+   * Максимальная длина текста карточки.
+   * @private
+   * @readonly
+   */
   // eslint-disable-next-line @typescript-eslint/naming-convention
   private readonly TEXT_MAX_LENGTH = 250;
 
+  /**
+   * Создает экземпляр формы карточки.
+   * @param {ICardFormOptions} options - Опции формы (колбэки и параметры).
+   */
   constructor(options: ICardFormOptions) {
     this._element = this._createForm();
     this._options = options;
@@ -23,14 +76,28 @@ export class CardForm {
     this._updateSubmitButtonState();
   }
 
+  /**
+   * Возвращает DOM-элемент формы.
+   * @returns {HTMLElement} Элемент формы.
+   */
   get element(): HTMLElement {
     return this._element;
   }
 
+  /**
+   * Возвращает опции формы.
+   * @returns {ICardFormOptions} Текущие опции формы.
+   */
   get options(): ICardFormOptions {
     return this._options;
   }
 
+  /**
+   * Создает DOM-структуру формы.
+   *
+   * @returns {HTMLElement} Созданный элемент формы.
+   * @private
+   */
   private _createForm(): HTMLElement {
     return createElement({
       tag: 'form',
@@ -51,6 +118,12 @@ export class CardForm {
     });
   }
 
+  /**
+   * Создает конфигурацию для поля заголовка.
+   *
+   * @returns {ElementConfig} Конфигурация поля заголовка.
+   * @private
+   */
   private _createTitleField(): ElementConfig {
     const id = `card-title-${Date.now()}`;
     return {
@@ -88,6 +161,12 @@ export class CardForm {
     };
   }
 
+  /**
+   * Создает конфигурацию для поля описания.
+   *
+   * @returns {ElementConfig} Конфигурация поля описания.
+   * @private
+   */
   private _createDescriptionField(): ElementConfig {
     const id = `card-text-${Date.now()}`;
     return {
@@ -124,6 +203,12 @@ export class CardForm {
     };
   }
 
+  /**
+   * Создает конфигурацию для блока кнопок формы.
+   *
+   * @returns {ElementConfig} Конфигурация блока кнопок.
+   * @private
+   */
   private _createActions(): ElementConfig {
     return {
       tag: 'div',
@@ -149,6 +234,10 @@ export class CardForm {
     };
   }
 
+  /**
+   * Навешивает обработчики событий на элементы формы.
+   * @private
+   */
   private _bindEvents(): void {
     this._titleInput = this._element.querySelector(
       '.card-form__input--title'
@@ -184,24 +273,48 @@ export class CardForm {
     });
   }
 
+  /**
+   * Обработчик ввода в поле заголовка.
+   * Обновляет счетчик символов и состояние кнопки отправки.
+   *
+   * @private
+   */
   private _onTitleInput(): void {
     const length = this._titleInput.value.length;
     this._titleCounter.textContent = `${length}/${this.TITLE_MAX_LENGTH}`;
     this._updateSubmitButtonState();
   }
 
+  /**
+   * Обработчик ввода в поле текста.
+   * Обновляет счетчик символов и состояние кнопки отправки.
+   *
+   * @private
+   */
   private _onTextInput(): void {
     const length = this._textInput.value.length;
     this._textCounter.textContent = `${length}/${this.TEXT_MAX_LENGTH}`;
     this._updateSubmitButtonState();
   }
 
+  /**
+   * Обновляет состояние кнопки отправки формы.
+   * Кнопка активна, если заполнено хотя бы одно из полей.
+   *
+   * @private
+   */
   private _updateSubmitButtonState(): void {
     const hasTitle = this._titleInput.value.trim().length > 0;
     const hasText = this._textInput.value.trim().length > 0;
     this._submitBtn.disabled = !(hasTitle || hasText);
   }
 
+  /**
+   * Обработчик отправки формы.
+   * Вызывает колбэк onSubmit с данными формы и очищает поля.
+   *
+   * @private
+   */
   private _onSubmit(): void {
     const title = this._titleInput.value.trim();
     const text = this._textInput.value.trim();
@@ -212,6 +325,10 @@ export class CardForm {
     }
   }
 
+  /**
+   * Очищает поля формы и сбрасывает счетчики.
+   * @private
+   */
   private _clearForm(): void {
     this._titleInput.value = '';
     this._textInput.value = '';

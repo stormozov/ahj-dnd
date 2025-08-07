@@ -1,5 +1,7 @@
 # Домашнее задание к занятию "6. Работа с файлами, DnD"
 
+[![CI Pipeline](https://github.com/stormozov/ahj-dnd/actions/workflows/ci.yml/badge.svg)](https://github.com/stormozov/ahj-dnd/actions/workflows/ci.yml)
+
 Правила сдачи задания:
 
 1. **Важно**: в рамках этого ДЗ нужно использовать yarn (поэтому файла `package-lock.json` в репозитории быть не должно)
